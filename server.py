@@ -8,8 +8,9 @@ import sys
 import threading
  
 con = threading.Condition()
-HOST = raw_input("input the server's ip adrress: ") # Symbolic name meaning all available interfaces
-PORT = 8888 # Arbitrary non-privileged port
+#HOST = input("input the server's ip adrress: ") # Symbolic name meaning all available interfaces
+HOST = '10.10.10.101'
+PORT = 8880 # Arbitrary non-privileged port
 data = ''
  
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,7 +30,7 @@ def clientThreadIn(conn, nick):
             if not temp:
                 conn.close()
                 return
-            NotifyAll(temp)
+            NotifyAll(temp.decode('utf-8'))
             print(data)
         except:
             NotifyAll(nick + " leaves the room!")
@@ -52,7 +53,7 @@ def ClientThreadOut(conn, nick):
             con.wait()
             if data:
                 try:
-                    conn.send(data)
+                    conn.send(data.encode('utf-8'))
                     con.release()
                 except:
                     con.release()
@@ -66,10 +67,10 @@ while 1:
     nick = conn.recv(1024)
      #send only takes string
     #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-    NotifyAll('Welcome ' + nick + ' to the room!')
+    NotifyAll('Welcome ' + str(nick.decode('utf-8')) + ' to the room!')
     print(data)
     print(str((threading.activeCount() + 1) / 2) + ' person(s)!')
-    conn.send(data)
+    conn.send(data.encode('utf-8'))
     threading.Thread(target = clientThreadIn , args = (conn, nick)).start()
     threading.Thread(target = ClientThreadOut , args = (conn, nick)).start()
  
