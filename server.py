@@ -13,10 +13,10 @@ PORT = 8888 # Arbitrary non-privileged port
 data = ''
  
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print 'Socket created'
+print('Socket created')
 s.bind((HOST, PORT))
 s.listen(10)
-print 'Socket now listening'
+print('Socket now listening')
  
 #Function for handling connections. This will be used to create threads
 def clientThreadIn(conn, nick):
@@ -30,10 +30,10 @@ def clientThreadIn(conn, nick):
                 conn.close()
                 return
             NotifyAll(temp)
-            print data
+            print(data)
         except:
             NotifyAll(nick + " leaves the room!")
-            print data
+            print(data)
             return
  
     #came out of loop
@@ -62,13 +62,13 @@ def ClientThreadOut(conn, nick):
 while 1:
     #wait to accept a connection - blocking call
     conn, addr = s.accept()
-    print 'Connected with ' + addr[0] + ':' + str(addr[1])
+    print('Connected with ' + addr[0] + ':' + str(addr[1]))
     nick = conn.recv(1024)
      #send only takes string
     #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
     NotifyAll('Welcome ' + nick + ' to the room!')
-    print data
-    print str((threading.activeCount() + 1) / 2) + ' person(s)!'
+    print(data)
+    print(str((threading.activeCount() + 1) / 2) + ' person(s)!')
     conn.send(data)
     threading.Thread(target = clientThreadIn , args = (conn, nick)).start()
     threading.Thread(target = ClientThreadOut , args = (conn, nick)).start()
